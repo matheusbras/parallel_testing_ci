@@ -1,57 +1,76 @@
-# Ruby CircleCI 2.0 configuration file
-#
-# Check https://circleci.com/docs/2.0/language-ruby/ for more details
-#
+---
 version: 2
 jobs:
   build:
+    working_directory: ~/test
     docker:
-      # specify the version you desire here
-       - image: circleci/ruby:2.4.1-node-browsers
-
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/postgres:9.4
-
-    working_directory: ~/repo
-
+      - image: circleci/ruby:2.4-node-browsers
+        environment:
+          BUNDLE_JOBS: 3
+          BUNDLE_RETRY: 3
+          BUNDLE_PATH: vendor/bundle
+          PGHOST: 127.0.0.1
+          PGUSER: postgres
+          TZ: "/usr/share/zoneinfo/America/Los_Angeles"
+          RAILS_ENV: test
+      - image: redis:2.8.19
+      - image: circleci/postgres:9.6-alpine-ram
+        environment:
+          POSTGRES_USER: postgres
+          POSTGRES_DB: parallel_test
+          POSTGRES_PASSWORD: ""
     steps:
       - checkout
 
-      # Download and cache dependencies
+        # Restore Cached Dependencies
+      - type: cache-restore
+        name: Restore bundle cache
+        keys:
+          - Bonsai-bundle-{{ checksum "Gemfile.lock" }}
+          - Bonsai-bundle-
+
+        # Bundle install dependencies
+      - run: bundle install --path vendor/bundle
+
+        # Cache Dependencies
+      - type: cache-save
+        name: Store bundle cache
+        key: Bonsai-bundle-{{ checksum "Gemfile.lock" }}
+        paths:
+          - vendor/bundle
+
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "Gemfile.lock" }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
+            - Bonsai-asset-cache-{{ arch }}-{{ .Branch }}
+            - Bonsai-asset-cache-
 
-      - run:
-          name: install dependencies
-          command: |
-            bundle install --jobs=4 --retry=3 --path vendor/bundle
+      - run: bundle exec rake assets:precompile
 
       - save_cache:
+          key: Bonsai-asset-cache-{{ arch }}-{{ .Branch }}-{{ epoch }}
           paths:
-            - ./vendor/bundle
-          key: v1-dependencies-{{ checksum "Gemfile.lock" }}
+            - public/assets
+            - tmp/cache/assets/sprockets
 
-      # Database setup
-      - run: bundle exec rake db:create
-      - run: bundle exec rake db:schema:load
+        # Wait for DB
+      - run: dockerize -wait tcp://localhost:5432 -timeout 1m
 
-      # run tests!
+        # Setup the database
+      - run:
+          name: Database setup
+          command: bin/rails db:schema:load --trace
+
       - run:
           name: run tests
           command: |
             mkdir /tmp/test-results
             TEST_FILES="$(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings)"
 
-            bundle exec rspec --format progress \
-                            --format RspecJunitFormatter \
-                            --out /tmp/test-results/rspec.xml \
-                            --format progress \
-                            $TEST_FILES
+            COVERAGE=on bundle exec rspec --format progress \
+            --format RspecJunitFormatter \
+            --out /tmp/test-results/rspec.xml \
+            --format progress \
+            $TEST_FILES
 
       # collect reports
       - store_test_results:
@@ -59,3 +78,7 @@ jobs:
       - store_artifacts:
           path: /tmp/test-results
           destination: test-results
+
+      - store_artifacts:
+          path: coverage
+
