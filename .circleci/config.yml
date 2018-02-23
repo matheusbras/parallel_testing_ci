@@ -63,14 +63,7 @@ jobs:
           name: run tests
           command: |
             mkdir /tmp/test-results
-            TEST_FILES="$(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings)"
-            echo $TEST_FILES
-
-            COVERAGE=on bundle exec rspec --format progress \
-            --format RspecJunitFormatter \
-            --out /tmp/test-results/rspec.xml \
-            --format progress \
-            $TEST_FILES
+            TESTFILES=$(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings) COVERAGE=on bundle exec rspec --profile 10 --format RspecJunitFormatter --out test-results/rspec.xml --format progress -- ${TESTFILES}
 
       # collect reports
       - store_test_results:
