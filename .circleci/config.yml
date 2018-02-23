@@ -14,6 +14,7 @@ jobs:
           PGUSER: postgres
           TZ: "/usr/share/zoneinfo/America/Los_Angeles"
           RAILS_ENV: test
+          CIRCLE_TOKEN: 9d84ee0624ebeb2afcd888414994f566716afd83
       - image: redis:2.8.19
       - image: circleci/postgres:9.6-alpine-ram
         environment:
@@ -73,13 +74,6 @@ jobs:
             --format progress \
             $TEST_FILES
 
-      # collect reports
-      - store_test_results:
-          path: /tmp/test-results
       - store_artifacts:
-          path: /tmp/test-results
-          destination: test-results
-
-      - store_artifacts:
-          path: coverage
+          path: coverage/.resultset.json
 
