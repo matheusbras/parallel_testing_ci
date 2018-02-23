@@ -1,6 +1,5 @@
 if ENV['COVERAGE'] == 'on'
   require 'simplecov'
-  Coveralls.wear!
 
   if ENV['CIRCLE_NODE_INDEX']
     SimpleCov.command_name "specs-" + (ENV['CIRCLE_NODE_INDEX'] || '')

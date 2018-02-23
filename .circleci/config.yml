@@ -77,3 +77,7 @@ jobs:
       - store_artifacts:
           path: coverage/.resultset.json
 
+      - deploy:
+          name: 'Merge coverage result and push to Coveralls'
+          command: bundle exec rake merge_results && bundle exec rake coveralls:push
+
