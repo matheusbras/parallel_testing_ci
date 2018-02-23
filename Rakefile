@@ -3,4 +3,9 @@
 
 require_relative 'config/application'
 
+if ENV['CIRCLE_TOKEN']
+  require 'coveralls/rake/task'
+  Coveralls::RakeTask.new
+end
+
 Rails.application.load_tasks

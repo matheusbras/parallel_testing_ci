@@ -1,0 +1,107 @@
+{
+  "RSpec": {
+    "coverage": {
+      "/Users/matheusbras/Projetos/parallel_build_test/app/helpers/application_helper.rb": [
+        1,
+        null
+      ],
+      "/Users/matheusbras/Projetos/parallel_build_test/app/helpers/people_helper.rb": [
+        1,
+        null
+      ],
+      "/Users/matheusbras/Projetos/parallel_build_test/app/controllers/people_controller.rb": [
+        1,
+        1,
+        null,
+        null,
+        1,
+        101,
+        null,
+        null,
+        null,
+        1,
+        null,
+        null,
+        null,
+        1,
+        100,
+        null,
+        null,
+        null,
+        1,
+        null,
+        null,
+        null,
+        1,
+        300,
+        null,
+        300,
+        200,
+        null,
+        100,
+        null,
+        null,
+        null,
+        null,
+        1,
+        300,
+        200,
+        null,
+        100,
+        null,
+        null,
+        null,
+        null,
+        1,
+        200,
+        200,
+        null,
+        null,
+        1,
+        null,
+        1,
+        700,
+        null,
+        null,
+        null,
+        1,
+        600,
+        null,
+        null
+      ],
+      "/Users/matheusbras/Projetos/parallel_build_test/app/models/person.rb": [
+        1,
+        1,
+        null
+      ],
+      "/Users/matheusbras/Projetos/parallel_build_test/app/models/application_record.rb": [
+        1,
+        1,
+        null
+      ],
+      "/Users/matheusbras/Projetos/parallel_build_test/app/mailers/application_mailer.rb": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "/Users/matheusbras/Projetos/parallel_build_test/app/jobs/application_job.rb": [
+        0,
+        0
+      ],
+      "/Users/matheusbras/Projetos/parallel_build_test/app/channels/application_cable/connection.rb": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "/Users/matheusbras/Projetos/parallel_build_test/app/channels/application_cable/channel.rb": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "timestamp": 1519419492
+  }
+}
